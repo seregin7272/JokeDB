@@ -1,0 +1,8 @@
+engine:
+  type: "in_memory"
+addr: "127.0.0.1:3002"
+max_connections: 100
+log:
+  level: "info"
+  output: "./log/app.log"
+dev_mode: true
