@@ -20,8 +20,7 @@ func runClient() error {
 		return err
 	}
 
-	err = logger.Init(conf.DevMode, app.Name, conf.Log.Level)
-	if err != nil {
+	if err = logger.Init(conf.DevMode, app.Name, conf.Log.Level); err != nil {
 		return err
 	}
 
@@ -35,7 +34,7 @@ func runClient() error {
 	sc.Split(bufio.ScanLines)
 
 	for sc.Scan() {
-		resp, errPub := cl.Publish(sc.Bytes())
+		resp, errPub := cl.Send(sc.Bytes())
 		if errPub != nil {
 			logger.L().Error(errPub)
 			return errPub

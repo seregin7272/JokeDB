@@ -20,11 +20,10 @@ func NewClient(addr string, logger Logger) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Publish(msg []byte) ([]byte, error) {
+func (c *Client) Send(msg []byte) ([]byte, error) {
 	buffer := make([]byte, bufferSize)
 
-	_, err := c.conn.Write(msg)
-	if err != nil {
+	if _, err := c.conn.Write(msg); err != nil {
 		c.logger.Error(err)
 		return nil, err
 	}

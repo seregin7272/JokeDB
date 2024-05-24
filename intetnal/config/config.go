@@ -9,7 +9,7 @@ import (
 type Config struct {
 	Engine         Engine
 	Log            Log
-	MaxConnections uint8
+	MaxConnections uint
 	Addr           string
 	DevMode        bool
 }
@@ -42,13 +42,11 @@ func Init(configFile string) (*Config, error) {
 		},
 	}
 	viper.SetConfigFile(configFile)
-	err := viper.ReadInConfig()
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
 
-	err = viper.Unmarshal(&config)
-	if err != nil {
+	if err := viper.Unmarshal(&config); err != nil {
 		return nil, err
 	}
 

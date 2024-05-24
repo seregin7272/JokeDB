@@ -72,13 +72,17 @@ func (a App) DoRawCommand(ctx context.Context, c string) (string, error) {
 func (a App) Handle(ctx context.Context, s string) string {
 	logger.L().Infof("handler get command: %s", s)
 	res, err := a.DoRawCommand(ctx, s)
-	resp := func() string {
-		if err != nil {
-			logger.L().Error(err)
-			return err.Error()
-		}
-		return res
-	}()
+	if err != nil {
+		logger.L().Error(err)
+	}
+	resp := response(err, res)
 	logger.L().Infof("handler response: %s", resp)
 	return resp
+}
+
+func response(err error, res string) string {
+	if err != nil {
+		return err.Error()
+	}
+	return res
 }

@@ -16,13 +16,10 @@ func runApp() error {
 	if err != nil {
 		return err
 	}
-	err = logger.Init(appConfig.DevMode, app.Name, appConfig.Log.Level)
-	if err != nil {
+	if err = logger.Init(appConfig.DevMode, app.Name, appConfig.Log.Level); err != nil {
 		return err
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	db := app.New(compute.New(), engine.New())
 
 	serv, err := tcp.NewServer(appConfig.Addr, appConfig.MaxConnections, logger.L(), db.Handle)
@@ -31,7 +28,7 @@ func runApp() error {
 	}
 
 	logger.L().Infof("DB listening addr: %s", appConfig.Addr)
-	serv.Listen(ctx)
+	serv.Listen(context.Background())
 
 	return nil
 }
