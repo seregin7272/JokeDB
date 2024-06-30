@@ -4,7 +4,15 @@ import (
 	"context"
 	"fmt"
 	"jokedb/intetnal/compute/analyzer"
+	"jokedb/intetnal/logger"
 	"jokedb/intetnal/storage/engine"
+)
+
+const (
+	Name      = "jokedb"
+	Addr      = "127.0.0.1:3002"
+	MaxConn   = 100
+	ConfigPah = "./config/app.yaml"
 )
 
 type Processor interface {
@@ -59,4 +67,22 @@ func (a App) DoRawCommand(ctx context.Context, c string) (string, error) {
 	}
 
 	return result, err
+}
+
+func (a App) Handle(ctx context.Context, s string) string {
+	logger.L().Infof("handler get command: %s", s)
+	res, err := a.DoRawCommand(ctx, s)
+	if err != nil {
+		logger.L().Error(err)
+	}
+	resp := response(err, res)
+	logger.L().Infof("handler response: %s", resp)
+	return resp
+}
+
+func response(err error, res string) string {
+	if err != nil {
+		return err.Error()
+	}
+	return res
 }
