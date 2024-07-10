@@ -23,6 +23,6 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.58
+          version: v1.58.1
       - name: Test with the Go CLI
         run: go test -v ./...
