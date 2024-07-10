@@ -2,13 +2,21 @@ package config
 
 import (
 	"jokedb/intetnal/app"
+	"time"
 
 	"github.com/spf13/viper"
+)
+
+const (
+	maxSizeSegment       = 1024 * 1024 * 10
+	flushingBatchSize    = 1000
+	flushingBatchTimeout = 10 * time.Millisecond
 )
 
 type Config struct {
 	Engine         Engine
 	Log            Log
+	WAL            WAL
 	MaxConnections uint
 	Addr           string
 	DevMode        bool
@@ -28,6 +36,14 @@ type Log struct {
 	Output string
 }
 
+type WAL struct {
+	Enabled              bool
+	DirPath              string
+	MaxSizeSegment       uint32
+	FlushingBatchSize    uint32
+	FlushingBatchTimeout time.Duration
+}
+
 func Init(configFile string) (*Config, error) {
 	config := Config{
 		Addr: app.Addr,
@@ -38,7 +54,14 @@ func Init(configFile string) (*Config, error) {
 		DevMode:        false,
 		Log: Log{
 			Level:  "error",
-			Output: "./log/app.log",
+			Output: "./db/log/app.log",
+		},
+		WAL: WAL{
+			Enabled:              true,
+			MaxSizeSegment:       maxSizeSegment,
+			DirPath:              "./db/wal",
+			FlushingBatchSize:    flushingBatchSize,
+			FlushingBatchTimeout: flushingBatchTimeout,
 		},
 	}
 	viper.SetConfigFile(configFile)
