@@ -20,9 +20,9 @@ type Processor interface {
 }
 
 type Storage interface {
-	Upsert(ctx context.Context, kv engine.KV) error
-	Get(ctx context.Context, k string) (string, error)
-	Del(ctx context.Context, k string) error
+	Put(ctx context.Context, kv engine.KV) error
+	Get(ctx context.Context, kv engine.KV) (string, error)
+	Del(ctx context.Context, kv engine.KV) error
 }
 
 type App struct {
@@ -46,19 +46,19 @@ func (a App) DoRawCommand(ctx context.Context, c string) (string, error) {
 	var result string
 	switch actionType.Type {
 	case engine.SET:
-		err = a.storage.Upsert(ctx, actionType.KV)
+		err = a.storage.Put(ctx, actionType.KV)
 		if err != nil {
 			err = fmt.Errorf("SET query :%w", err)
 		} else {
 			result = "SET ok"
 		}
 	case engine.GET:
-		result, err = a.storage.Get(ctx, actionType.Key)
+		result, err = a.storage.Get(ctx, actionType.KV)
 		if err != nil {
 			err = fmt.Errorf("GET query :%w", err)
 		}
 	case engine.DEL:
-		err = a.storage.Del(ctx, actionType.Key)
+		err = a.storage.Del(ctx, actionType.KV)
 		if err != nil {
 			err = fmt.Errorf("DEL query :%w", err)
 		} else {

@@ -4,5 +4,11 @@ addr: "127.0.0.1:3002"
 max_connections: 100
 log:
   level: "info"
-  output: "./log/app.log"
+  output: "./db/log/app.log"
+wal:
+  flushingBatchSize: 100
+  flushingBatchTimeout: "10ms"
+  enabled: true
+  maxSegmentSize: 20971520
+  dirPath: "./db/wal"
 dev_mode: true

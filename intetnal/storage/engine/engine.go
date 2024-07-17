@@ -73,3 +73,9 @@ func (e *Engine) Del(ctx context.Context, k string) error {
 
 	return nil
 }
+
+func (e *Engine) Flush() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.storage = map[string]string{}
+}
